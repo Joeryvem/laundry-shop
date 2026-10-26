@@ -1,0 +1,130 @@
+
+<div class="orders-page">
+  <header class="page-heading">
+    <h1>Active Orders</h1>
+    <p>Track and update every order in your workflow.</p>
+  </header>
+
+  <section class="orders-card">
+    <div class="toolbar">
+      <label class="search-box">
+        <span aria-hidden="true">⌕</span>
+        <input
+          type="search"
+          name="search"
+          [(ngModel)]="searchText"
+          placeholder="Search order ID or customer..."
+          aria-label="Search order ID or customer"
+        />
+      </label>
+
+      <select
+        name="statusFilter"
+        [(ngModel)]="selectedStatus"
+        aria-label="Filter by order status"
+      >
+        <option>All statuses</option>
+        <option *ngFor="let status of statuses" [value]="status">
+          {{ status }}
+        </option>
+      </select>
+
+      <span class="order-count">
+        {{ filteredOrders.length }}
+        {{ filteredOrders.length === 1 ? 'order' : 'orders' }}
+      </span>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>ORDER ID</th>
+            <th>CUSTOMER</th>
+            <th>WEIGHT</th>
+            <th>TOTAL FEE</th>
+            <th>PAYMENT</th>
+            <th>STATUS</th>
+            <th>DATE</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr
+            *ngFor="let order of filteredOrders; trackBy: trackByOrderId"
+          >
+            <td class="order-id">{{ order.id }}</td>
+
+            <td>
+              <div class="customer-cell">
+                <span class="avatar">
+                  {{ getInitials(order.customerName) }}
+                </span>
+
+                <div class="customer-info">
+                  <strong>{{ order.customerName }}</strong>
+                  <small>{{ order.contactNumber }}</small>
+                </div>
+              </div>
+            </td>
+
+            <td>{{ order.weight | number:'1.1-2' }} kg</td>
+
+            <td class="fee">
+              {{ order.totalFee | currency:'PHP':'symbol':'1.0-2' }}
+            </td>
+
+            <td>
+              <button
+                type="button"
+                class="payment-badge"
+                [class.paid]="order.paymentStatus === 'Paid'"
+                [class.unpaid]="order.paymentStatus !== 'Paid'"
+                (click)="togglePayment(order)"
+                [attr.aria-label]="'Change payment status for ' + order.id"
+                title="Click to toggle payment status"
+              >
+                <span class="dot"></span>
+                {{ order.paymentStatus }}
+              </button>
+            </td>
+
+            <td>
+              <select
+                class="status-select"
+                [ngModel]="order.status"
+                (ngModelChange)="updateStatus(order, $event)"
+                [name]="'status-' + order.id"
+                [attr.aria-label]="'Update status for ' + order.id"
+              >
+                <option *ngFor="let status of statuses" [value]="status">
+                  {{ status }}
+                </option>
+              </select>
+            </td>
+
+            <td class="date-cell">{{ formatDate(order.date) }}</td>
+          </tr>
+
+          <tr *ngIf="filteredOrders.length === 0">
+            <td colspan="7">
+              <div class="empty-state">
+                <span class="empty-icon">▤</span>
+                <h3>
+                  {{ orders.length ? 'No matching orders' : 'No orders yet' }}
+                </h3>
+                <p>
+                  {{
+                    orders.length
+                      ? 'Try another search term or status filter.'
+                      : 'Create a new order to see it listed here.'
+                  }}
+                </p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

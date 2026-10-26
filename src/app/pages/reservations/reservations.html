@@ -1,0 +1,166 @@
+
+<div class="reservations-page">
+  <header class="page-heading">
+    <div>
+      <h1>Reservations</h1>
+      <p>Manage upcoming customer drop-offs.</p>
+    </div>
+  </header>
+
+  <section class="section-heading">
+    <div>
+      <h2>Upcoming drop-offs</h2>
+      <p>{{ upcomingCount }} reservations scheduled</p>
+    </div>
+
+    <button class="primary-button" (click)="openAddForm()">
+      <span>＋</span> Add reservation
+    </button>
+  </section>
+
+  <section class="reservation-grid" *ngIf="reservations.length; else empty">
+    <article
+      class="reservation-card"
+      *ngFor="let reservation of reservations; trackBy: trackById"
+    >
+      <div class="customer-row">
+        <span class="avatar">{{ initials(reservation.customerName) }}</span>
+
+        <div class="customer-info">
+          <strong>{{ reservation.customerName }}</strong>
+          <small>{{ reservation.contactNumber }}</small>
+        </div>
+
+        <span class="status-badge"
+          [class.confirmed]="reservation.status === 'Confirmed'"
+          [class.pending]="reservation.status === 'Pending'">
+          <span class="dot"></span>
+          {{ reservation.status }}
+        </span>
+      </div>
+
+      <div class="reservation-details">
+        <div class="detail-item">
+          <span class="detail-icon">▦</span>
+          <div>
+            <small>Drop-off date</small>
+            <strong>{{ formatDate(reservation.date) }}</strong>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-icon">◷</span>
+          <div>
+            <small>Scheduled time</small>
+            <strong>{{ reservation.time }}</strong>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-icon">♧</span>
+          <div>
+            <small>Estimated load</small>
+            <strong>{{ reservation.bags }} {{ reservation.bags === 1 ? 'bag' : 'bags' }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="secondary-button" (click)="reschedule(reservation)">
+          Reschedule
+        </button>
+        <button class="primary-button" (click)="checkIn(reservation)">
+          Check in
+        </button>
+      </div>
+    </article>
+  </section>
+
+  <ng-template #empty>
+    <section class="empty-state">
+      <div class="empty-icon">▦</div>
+      <h3>No reservations yet</h3>
+      <p>Add a reservation to schedule a customer's laundry drop-off.</p>
+      <button class="primary-button" (click)="openAddForm()">
+        ＋ Add reservation
+      </button>
+    </section>
+  </ng-template>
+
+  <div class="modal-backdrop" *ngIf="showForm" (click)="cancelForm()">
+    <section
+      class="reservation-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="reservation-form-title"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 id="reservation-form-title">Add reservation</h2>
+      <p>Enter the customer's scheduled drop-off details.</p>
+
+      <form (submit)="$event.preventDefault(); addReservation()">
+        <label>
+          Customer name
+          <input
+            name="customerName"
+            required
+            [(ngModel)]="form.customerName"
+            placeholder="e.g. Juan Dela Cruz"
+          />
+        </label>
+
+        <label>
+          Contact number
+          <input
+            name="contactNumber"
+            type="tel"
+            required
+            [(ngModel)]="form.contactNumber"
+            placeholder="09XX XXX XXXX"
+          />
+        </label>
+
+        <label>
+          Drop-off date
+          <input
+            name="date"
+            type="date"
+            required
+            [min]="today()"
+            [(ngModel)]="form.date"
+          />
+        </label>
+
+        <label>
+          Scheduled time
+          <input
+            name="time"
+            type="time"
+            required
+            [(ngModel)]="form.time"
+          />
+        </label>
+
+        <label>
+          Estimated number of bags
+          <input
+            name="bags"
+            type="number"
+            min="1"
+            required
+            [(ngModel)]="form.bags"
+          />
+        </label>
+
+        <div class="modal-actions">
+          <button type="button" class="secondary-button" (click)="cancelForm()">
+            Cancel
+          </button>
+          <button type="submit" class="primary-button">
+            Save reservation
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>

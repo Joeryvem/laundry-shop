@@ -1,0 +1,120 @@
+
+<div class="order-page">
+  <div class="page-heading">
+    <h1>New Order</h1>
+    <p>Create an order and issue a digital laundry ticket.</p>
+  </div>
+
+  <form
+    class="order-card"
+    #orderForm="ngForm"
+    (ngSubmit)="saveOrder()"
+  >
+    <div class="card-heading">
+      <div>
+        <h2>Customer &amp; laundry details</h2>
+        <p>Enter the information below to create a new order.</p>
+      </div>
+
+      <span class="next-id">Next ID: {{ nextOrderId }}</span>
+    </div>
+
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="field">
+          <label for="customerName">Customer name</label>
+          <input
+            id="customerName"
+            name="customerName"
+            type="text"
+            [(ngModel)]="customerName"
+            placeholder="e.g. Juan Dela Cruz"
+            autocomplete="name"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label for="contactNumber">Contact number</label>
+          <input
+            id="contactNumber"
+            name="contactNumber"
+            type="tel"
+            [(ngModel)]="contactNumber"
+            placeholder="09XX XXX XXXX"
+            autocomplete="tel"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label for="weight">Laundry weight</label>
+          <div class="input-with-unit">
+            <input
+              id="weight"
+              name="weight"
+              type="number"
+              [(ngModel)]="weight"
+              min="0.1"
+              step="0.1"
+              required
+            />
+            <span>kg</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="pricePerKilo">Price per kilo</label>
+          <div class="input-with-unit price-input">
+            <span>₱</span>
+            <input
+              id="pricePerKilo"
+              name="pricePerKilo"
+              type="number"
+              [(ngModel)]="pricePerKilo"
+              min="1"
+              step="1"
+              required
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="total-panel">
+        <div>
+          <strong>Calculated total fee</strong>
+          <p>
+            {{ (weight || 0).toFixed(2) }} kg ×
+            ₱{{ (pricePerKilo || 0).toFixed(2) }} per kg
+          </p>
+        </div>
+
+        <strong class="total-amount">
+          {{ totalFee | currency:'PHP':'symbol':'1.0-2' }}
+        </strong>
+      </div>
+
+      <div
+        *ngIf="message"
+        class="form-message"
+        [class.success]="messageType === 'success'"
+        [class.error]="messageType === 'error'"
+        role="status"
+      >
+        {{ message }}
+      </div>
+
+      <div class="card-footer">
+        <p>Payment can be recorded when the order is claimed.</p>
+
+        <button
+          type="submit"
+          class="save-button"
+          [disabled]="orderForm.invalid"
+        >
+          Save order <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

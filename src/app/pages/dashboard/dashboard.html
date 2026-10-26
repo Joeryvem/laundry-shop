@@ -1,0 +1,178 @@
+
+<div class="dashboard-page">
+  <div class="page-heading">
+    <div>
+      <h1>Dashboard</h1>
+      <p>Here's what's happening at your shop today.</p>
+    </div>
+  </div>
+
+  <section class="stats-grid">
+    <article class="stat-card">
+      <div class="stat-icon income-icon">₱</div>
+      <div>
+        <span class="stat-label">TODAY'S COLLECTED INCOME</span>
+        <h2>{{ formatPeso(collectedIncome) }}</h2>
+        <p>From paid orders</p>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon completed-icon">✓</div>
+      <div>
+        <span class="stat-label">COMPLETED TRANSACTIONS</span>
+        <h2>{{ completedTransactions }}</h2>
+        <p>Claimed and completed orders</p>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon active-icon">♧</div>
+      <div>
+        <span class="stat-label">ACTIVE ORDERS</span>
+        <h2>{{ activeOrders }}</h2>
+        <p>Orders still in progress</p>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon unclaimed-icon">◷</div>
+      <div>
+        <span class="stat-label">UNCLAIMED LAUNDRY</span>
+        <h2>{{ unclaimedLaundry }}</h2>
+        <p>Ready for customer pickup</p>
+      </div>
+    </article>
+  </section>
+
+  <section class="dashboard-columns">
+    <article class="panel recent-panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Recent orders</h2>
+          <p>Latest laundry orders and their status</p>
+        </div>
+        <a routerLink="/active-orders">View all →</a>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>ORDER ID</th>
+              <th>CUSTOMER</th>
+              <th>TOTAL FEE</th>
+              <th>PAYMENT</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of orders">
+              <td><strong>{{ order.id }}</strong></td>
+              <td>
+                <div class="customer-cell">
+                  <span class="avatar">{{ order.initials }}</span>
+                  <strong>{{ order.customer }}</strong>
+                </div>
+              </td>
+              <td>{{ formatPeso(order.total) }}</td>
+              <td>
+                <span class="pill"
+                  [class.paid]="order.payment === 'Paid'"
+                  [class.unpaid]="order.payment === 'Unpaid'">
+                  {{ order.payment }}
+                </span>
+              </td>
+              <td>
+                <span class="pill status-pill">{{ order.status }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="empty-state" *ngIf="orders.length === 0">
+        <span class="empty-icon">▤</span>
+        <h3>No orders yet</h3>
+        <p>Orders you create will appear here.</p>
+        <a class="primary-button" routerLink="/new-order">
+          + Create new order
+        </a>
+      </div>
+    </article>
+
+    <article class="panel reservations-panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Incoming reservations</h2>
+          <p>Scheduled customer drop-offs</p>
+        </div>
+        <a routerLink="/reservations">View all</a>
+      </div>
+
+      <div class="reservation-list" *ngIf="reservations.length > 0">
+        <div class="reservation-item" *ngFor="let item of reservations">
+          <div class="date-box">
+            <strong>{{ item.day }}</strong>
+            <small>{{ item.month }}</small>
+          </div>
+          <div class="reservation-details">
+            <strong>{{ item.customer }}</strong>
+            <small>{{ item.time }} · {{ item.bags }} bags</small>
+          </div>
+          <span class="pill"
+            [class.paid]="item.status === 'Confirmed'"
+            [class.unpaid]="item.status === 'Pending'">
+            {{ item.status }}
+          </span>
+        </div>
+      </div>
+
+      <div class="empty-state compact" *ngIf="reservations.length === 0">
+        <p>No upcoming reservations.</p>
+      </div>
+
+      <a class="outline-button" routerLink="/new-order">
+        + Create new order
+      </a>
+    </article>
+  </section>
+
+  <section class="panel attention-panel">
+    <div class="panel-heading">
+      <div>
+        <h2>Needs your attention</h2>
+        <p>Orders requiring an action</p>
+      </div>
+    </div>
+
+    <div class="attention-grid">
+      <a class="attention-item" routerLink="/active-orders">
+        <span class="attention-icon overdue-icon">◷</span>
+        <span>
+          <strong>{{ overdueOrders }} overdue orders</strong>
+          <small>Orders past their expected completion date</small>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="attention-item" routerLink="/active-orders">
+        <span class="attention-icon ready-icon">✓</span>
+        <span>
+          <strong>{{ unclaimedLaundry }} ready for pickup</strong>
+          <small>Check laundry that customers can claim</small>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="attention-item" routerLink="/claim-order">
+        <span class="attention-icon unpaid-icon">₱</span>
+        <span>
+          <strong>{{ unpaidOrders }} unpaid orders</strong>
+          <small>Orders with an outstanding balance</small>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </div>
+  </section>
+</div>

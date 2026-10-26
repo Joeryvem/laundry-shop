@@ -1,0 +1,132 @@
+
+<div class="reports-page">
+  <header class="page-heading">
+    <h1>Daily Reports</h1>
+    <p>Review shop performance and outstanding laundry.</p>
+  </header>
+
+  <section class="date-filter">
+    <div class="date-field">
+      <label for="fromDate">From</label>
+      <input id="fromDate" type="date" name="fromDate" [(ngModel)]="fromDate" />
+    </div>
+
+    <div class="date-field">
+      <label for="toDate">To</label>
+      <input id="toDate" type="date" name="toDate" [(ngModel)]="toDate" />
+    </div>
+
+    <button class="primary-button" type="button" (click)="applyDates()">
+      Apply dates
+    </button>
+  </section>
+
+  <p class="error-message" *ngIf="errorMessage" role="alert">
+    {{ errorMessage }}
+  </p>
+
+  <section class="summary-grid">
+    <article class="summary-card">
+      <div class="summary-icon income-icon">▱</div>
+      <div>
+        <span class="card-label">Collected income</span>
+        <strong>{{ collectedIncome | currency:'PHP':'symbol':'1.2-2' }}</strong>
+        <small>From {{ paidTransactions }} paid transactions</small>
+      </div>
+    </article>
+
+    <article class="summary-card">
+      <div class="summary-icon completed-icon">✓</div>
+      <div>
+        <span class="card-label">Completed transactions</span>
+        <strong>{{ completedTransactions }}</strong>
+        <small>{{ processedWeight | number:'1.1-2' }} kg processed</small>
+      </div>
+    </article>
+
+    <article class="summary-card">
+      <div class="summary-icon unpaid-icon">◷</div>
+      <div>
+        <span class="card-label">Unpaid orders</span>
+        <strong>{{ unpaidOrders }}</strong>
+        <small>{{ outstandingBalance | currency:'PHP':'symbol':'1.2-2' }} outstanding</small>
+      </div>
+    </article>
+
+    <article class="summary-card">
+      <div class="summary-icon shop-icon">♧</div>
+      <div>
+        <span class="card-label">Laundry in shop</span>
+        <strong>{{ laundryInShop }}</strong>
+        <small>{{ totalShopWeight | number:'1.1-2' }} kg total weight</small>
+      </div>
+    </article>
+  </section>
+
+  <section class="report-grid">
+    <article class="report-panel activity-panel">
+      <div class="panel-heading">
+        <h2>Daily activity</h2>
+        <p>Orders completed by time of day</p>
+      </div>
+
+      <div class="chart-area">
+        <div class="y-axis">
+          <span>{{ maxChartValue }}</span>
+          <span>{{ maxChartValue / 2 | number:'1.0-0' }}</span>
+          <span>0</span>
+        </div>
+
+        <div class="chart-content">
+          <div class="grid-line grid-top"></div>
+          <div class="grid-line grid-middle"></div>
+          <div class="grid-line grid-bottom"></div>
+
+          <div class="bars">
+            <div class="bar-column" *ngFor="let item of activity">
+              <div class="bar-track">
+                <div
+                  class="bar"
+                  [style.height.%]="item.height"
+                  [title]="item.count + ' completed orders'"
+                ></div>
+              </div>
+              <span>{{ item.label }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="chart-note">
+        Only orders with a recorded creation time appear in the hourly chart.
+      </p>
+    </article>
+
+    <article class="report-panel inventory-panel">
+      <div class="panel-heading">
+        <h2>Shop inventory</h2>
+        <p>Laundry currently on premises</p>
+      </div>
+
+      <div class="inventory-list">
+        <div class="inventory-row" *ngFor="let item of inventory">
+          <span class="inventory-label">
+            <i [class]="'inventory-dot ' + item.color"></i>
+            {{ item.label }}
+          </span>
+          <strong>{{ item.count }}</strong>
+        </div>
+      </div>
+
+      <div class="inventory-footer">
+        <span>Total laundry in shop</span>
+        <strong>{{ laundryInShop }} active orders</strong>
+      </div>
+    </article>
+  </section>
+
+  <div class="empty-state" *ngIf="orders.length === 0">
+    <strong>No saved orders yet</strong>
+    <p>Create an order first. Your reports will update from saved order data.</p>
+  </div>
+</div>

@@ -1,0 +1,298 @@
+
+:host {
+  display: block;
+  color: #102c45;
+}
+
+.orders-page {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 26px 30px 40px;
+}
+
+.page-heading {
+  margin-bottom: 27px;
+
+  h1 {
+    margin: 0;
+    color: #102c45;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+  }
+
+  p {
+    margin: 8px 0 0;
+    color: #69809a;
+    font-size: 13px;
+  }
+}
+
+.orders-card {
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #dce5ec;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgb(16 44 69 / 3%);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border-bottom: 1px solid #e0e7ed;
+
+  select {
+    height: 37px;
+    min-width: 160px;
+    padding: 0 12px;
+    color: #102c45;
+    background: white;
+    border: 1px solid #d5e0e8;
+    border-radius: 6px;
+    font-size: 11px;
+    outline: none;
+
+    &:focus {
+      border-color: #13877f;
+    }
+  }
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 275px;
+  height: 37px;
+  padding: 0 12px;
+  border: 1px solid #d5e0e8;
+  border-radius: 6px;
+
+  &:focus-within {
+    border-color: #13877f;
+    box-shadow: 0 0 0 3px rgb(19 135 127 / 8%);
+  }
+
+  > span {
+    color: #617c95;
+    font-size: 23px;
+    line-height: 1;
+  }
+
+  input {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    color: #102c45;
+    background: transparent;
+    border: 0;
+    outline: none;
+    font-size: 11px;
+
+    &::placeholder {
+      color: #91a3b7;
+    }
+  }
+}
+
+.order-count {
+  margin-left: auto;
+  color: #70869b;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+
+  th {
+    height: 34px;
+    padding: 0 13px;
+    color: #45617d;
+    background: #f9fbfc;
+    border-bottom: 1px solid #dfe7ed;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.35px;
+  }
+
+  td {
+    height: 54px;
+    padding: 9px 13px;
+    border-bottom: 1px solid #e8edf1;
+    color: #193751;
+    font-size: 11px;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  tbody tr:hover:not(:last-child) {
+    background: #fbfdfd;
+  }
+}
+
+.order-id {
+  color: #102c45;
+  font-weight: 700;
+}
+
+.customer-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 175px;
+}
+
+.avatar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  color: #36536b;
+  background: #edf2f4;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.customer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  strong {
+    color: #102c45;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  small {
+    color: #8194a7;
+    font-size: 9px;
+  }
+}
+
+.fee {
+  font-weight: 500;
+}
+
+.payment-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border: 0;
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+
+  .dot {
+    width: 5px;
+    height: 5px;
+    background: currentColor;
+    border-radius: 50%;
+  }
+
+  &.paid {
+    color: #087c70;
+    background: #e6f5f1;
+  }
+
+  &.unpaid {
+    color: #a45a00;
+    background: #fff3dd;
+  }
+}
+
+.status-select {
+  width: 153px;
+  height: 31px;
+  padding: 0 9px;
+  color: #193751;
+  background: #fff;
+  border: 1px solid #d5e0e8;
+  border-radius: 6px;
+  outline: none;
+  font-size: 10px;
+
+  &:focus {
+    border-color: #13877f;
+  }
+}
+
+.date-cell {
+  color: #526d86;
+}
+
+.empty-state {
+  padding: 50px 20px;
+  text-align: center;
+  white-space: normal;
+
+  .empty-icon {
+    color: #7d9aab;
+    font-size: 30px;
+  }
+
+  h3 {
+    margin: 12px 0 7px;
+    color: #193751;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    color: #71869c;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 900px) {
+  .orders-page {
+    padding: 22px 16px 30px;
+  }
+
+  .toolbar {
+    flex-wrap: wrap;
+  }
+
+  .search-box {
+    flex: 1 1 220px;
+  }
+
+  .order-count {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-heading h1 {
+    font-size: 23px;
+  }
+
+  .toolbar select {
+    width: 100%;
+  }
+
+  .search-box {
+    flex-basis: 100%;
+    width: 100%;
+  }
+}

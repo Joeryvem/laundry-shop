@@ -1,0 +1,273 @@
+
+:host {
+  display: block;
+  color: #102c45;
+}
+
+.order-page {
+  width: 100%;
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 26px 30px 40px;
+}
+
+.page-heading {
+  margin-bottom: 26px;
+
+  h1 {
+    margin: 0;
+    color: #102c45;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+  }
+
+  p {
+    margin: 8px 0 0;
+    color: #69809a;
+    font-size: 13px;
+  }
+}
+
+.order-card {
+  width: min(100%, 865px);
+  margin: 0 auto;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #dce5ec;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgb(16 44 69 / 3%);
+}
+
+.card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px;
+  border-bottom: 1px solid #e0e7ed;
+
+  h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  p {
+    margin: 7px 0 0;
+    color: #6b829b;
+    font-size: 11px;
+  }
+}
+
+.next-id {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  color: #0759c7;
+  background: #eaf2ff;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.card-body {
+  padding: 24px 22px 17px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 20px;
+}
+
+.field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 10px;
+
+  label {
+    color: #102c45;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  input {
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    padding: 0 11px;
+    color: #102c45;
+    background: #fff;
+    border: 1px solid #d5e0e8;
+    border-radius: 6px;
+    outline: none;
+    font: inherit;
+    font-size: 12px;
+
+    &::placeholder {
+      color: #91a3b7;
+    }
+
+    &:focus {
+      border-color: #13877f;
+      box-shadow: 0 0 0 3px rgb(19 135 127 / 10%);
+    }
+  }
+}
+
+.input-with-unit {
+  display: flex;
+  align-items: center;
+  height: 42px;
+  padding-right: 12px;
+  border: 1px solid #d5e0e8;
+  border-radius: 6px;
+
+  &:focus-within {
+    border-color: #13877f;
+    box-shadow: 0 0 0 3px rgb(19 135 127 / 10%);
+  }
+
+  input {
+    height: 40px;
+    border: 0;
+    box-shadow: none;
+  }
+
+  span {
+    flex-shrink: 0;
+    color: #6b829b;
+    font-size: 11px;
+  }
+}
+
+.price-input {
+  padding-left: 12px;
+
+  span {
+    color: #183b55;
+    font-size: 13px;
+  }
+}
+
+.total-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 22px 18px;
+  background: #f0f9f7;
+  border: 1px solid #cde9e3;
+  border-radius: 8px;
+
+  div > strong {
+    font-size: 11px;
+  }
+
+  p {
+    margin: 7px 0 0;
+    color: #68839a;
+    font-size: 10px;
+  }
+}
+
+.total-amount {
+  color: #087c70;
+  font-size: 26px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 19px;
+
+  p {
+    margin: 0;
+    color: #71869c;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+}
+
+.save-button {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  min-height: 40px;
+  padding: 0 17px;
+  color: white;
+  background: #087c70;
+  border: 1px solid #087c70;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: #06685f;
+  }
+
+  &:disabled {
+    opacity: 0.48;
+    cursor: not-allowed;
+  }
+}
+
+.form-message {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-radius: 7px;
+  font-size: 12px;
+
+  &.success {
+    color: #086b5e;
+    background: #e8f7f1;
+  }
+
+  &.error {
+    color: #a52323;
+    background: #fff0f0;
+  }
+}
+
+@media (max-width: 700px) {
+  .order-page {
+    padding: 22px 15px 30px;
+  }
+
+  .card-heading,
+  .card-body {
+    padding: 18px;
+  }
+
+  .card-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .card-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .save-button {
+    width: 100%;
+  }
+
+  .total-amount {
+    font-size: 22px;
+  }
+}

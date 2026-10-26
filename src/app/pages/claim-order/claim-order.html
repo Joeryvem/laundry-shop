@@ -1,0 +1,148 @@
+
+<div class="claim-page">
+  <header class="page-heading">
+    <h1>Claim Order</h1>
+    <p>Find an order, record payment, and complete claiming.</p>
+  </header>
+
+  <section class="search-card">
+    <h2>Find an order</h2>
+    <p>Enter the complete Order ID from the customer's ticket.</p>
+
+    <form class="search-form" (submit)="$event.preventDefault(); searchOrder()">
+      <label class="search-input">
+        <span aria-hidden="true">⌕</span>
+        <input
+          type="text"
+          name="searchId"
+          [(ngModel)]="searchId"
+          placeholder="e.g. LDY-1048"
+          aria-label="Order ID"
+          required
+        />
+      </label>
+
+      <button class="primary-button" type="submit">
+        Search order
+      </button>
+    </form>
+
+    <p
+      *ngIf="message"
+      class="feedback"
+      [class.success]="messageType === 'success'"
+      [class.error]="messageType === 'error'"
+      role="status"
+    >
+      {{ message }}
+    </p>
+  </section>
+
+  <section class="order-result" *ngIf="foundOrder as order">
+    <div class="result-heading">
+      <div>
+        <span class="eyebrow">ORDER DETAILS</span>
+        <h2>{{ order.id }}</h2>
+        <p>Verify the details before completing the claim.</p>
+      </div>
+
+      <span
+        class="status-badge"
+        [class.ready]="order.status === 'Ready for Pickup'"
+        [class.completed]="order.status === 'Claimed / Complete'"
+      >
+        {{ order.status }}
+      </span>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-item">
+        <span>Customer name</span>
+        <strong>{{ order.customerName }}</strong>
+      </div>
+
+      <div class="detail-item">
+        <span>Contact number</span>
+        <strong>{{ order.contactNumber || '—' }}</strong>
+      </div>
+
+      <div class="detail-item">
+        <span>Laundry weight</span>
+        <strong>{{ order.weight | number:'1.1-2' }} kg</strong>
+      </div>
+
+      <div class="detail-item">
+        <span>Price per kilo</span>
+        <strong>{{ order.pricePerKilo | currency:'PHP':'symbol':'1.2-2' }}</strong>
+      </div>
+
+      <div class="detail-item">
+        <span>Order date</span>
+        <strong>{{ order.date || '—' }}</strong>
+      </div>
+
+      <div class="detail-item">
+        <span>Payment status</span>
+        <strong
+          class="payment-text"
+          [class.paid]="order.paymentStatus === 'Paid'"
+          [class.unpaid]="order.paymentStatus !== 'Paid'"
+        >
+          {{ order.paymentStatus }}
+        </strong>
+      </div>
+    </div>
+
+    <div class="total-panel">
+      <div>
+        <span>Total amount</span>
+        <small>
+          {{ order.weight | number:'1.1-2' }} kg ×
+          {{ order.pricePerKilo | currency:'PHP':'symbol':'1.2-2' }} per kg
+        </small>
+      </div>
+
+      <strong>
+        {{ order.totalFee | currency:'PHP':'symbol':'1.2-2' }}
+      </strong>
+    </div>
+
+    <div class="payment-panel" *ngIf="order.status === 'Ready for Pickup' && order.paymentStatus !== 'Paid'">
+      <label for="paymentMethod">Payment method</label>
+      <select id="paymentMethod" name="paymentMethod" [(ngModel)]="paymentMethod">
+        <option value="Cash">Cash</option>
+        <option value="GCash">GCash</option>
+        <option value="Bank Transfer">Bank Transfer</option>
+      </select>
+
+      <button
+        type="button"
+        class="primary-button"
+        [disabled]="saving"
+        (click)="recordPayment()"
+      >
+        Record payment
+      </button>
+    </div>
+
+    <div class="result-actions">
+      <button type="button" class="secondary-button" (click)="clearSearch()">
+        Clear
+      </button>
+
+      <button
+        *ngIf="order.status === 'Ready for Pickup'"
+        type="button"
+        class="primary-button"
+        [disabled]="saving || order.paymentStatus !== 'Paid'"
+        (click)="completeClaim()"
+      >
+        Complete claim →
+      </button>
+
+      <span class="completed-note" *ngIf="order.status === 'Claimed / Complete'">
+        ✓ Laundry claimed and completed
+      </span>
+    </div>
+  </section>
+</div>

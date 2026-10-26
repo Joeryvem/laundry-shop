@@ -1,0 +1,62 @@
+
+@if (isLoginPage) {
+  <router-outlet />
+} @else {
+  <div class="app-layout">
+    <aside class="sidebar">
+      <a class="brand" routerLink="/dashboard">
+        <span class="brand-mark">Ⅲ</span>
+        <span>
+          <strong>FoldFlow</strong>
+          <small>Laundry Management</small>
+        </span>
+      </a>
+
+      <p class="nav-heading">WORKSPACE</p>
+
+      <nav class="navigation">
+        @for (item of navigation; track item.path) {
+          <a
+            class="nav-link"
+            [routerLink]="item.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <span class="nav-icon">{{ item.icon }}</span>
+            <span>{{ item.label }}</span>
+          </a>
+        }
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="shop-card">
+          <strong>FoldFlow Laundry</strong>
+          <small>Shop Management</small>
+        </div>
+
+        <div class="profile">
+          <span class="avatar">FM</span>
+          <span>
+            <strong>Shop Manager</strong>
+            <small>Management account</small>
+          </span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div>
+          <span class="topbar-label">FOLDFLOW MANAGEMENT</span>
+          <h2>Laundry Operations</h2>
+        </div>
+
+        <span class="account-badge">FM</span>
+      </header>
+
+      <section class="page-content">
+        <router-outlet />
+      </section>
+    </main>
+  </div>
+}
