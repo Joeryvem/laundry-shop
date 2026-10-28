@@ -34,6 +34,15 @@
         {{ filteredOrders.length === 1 ? 'order' : 'orders' }}
       </span>
     </div>
+    <p *ngIf="loading" role="status">Loading orders from Supabase...</p>
+
+<p *ngIf="errorMessage" role="alert" class="error-message">
+  {{ errorMessage }}
+</p>
+
+<p *ngIf="realtimeErrorMessage" role="status" class="error-message">
+  {{ realtimeErrorMessage }}
+</p>
 
     <div class="table-scroll">
       <table>
@@ -106,7 +115,7 @@
             <td class="date-cell">{{ formatDate(order.date) }}</td>
           </tr>
 
-          <tr *ngIf="filteredOrders.length === 0">
+          <tr *ngIf="filteredOrders.length === 0 && !loading && !errorMessage">
             <td colspan="7">
               <div class="empty-state">
                 <span class="empty-icon">▤</span>

@@ -118,6 +118,11 @@
     color: #a45a00;
     background: #fff3dd;
   }
+
+  &.rejected {
+    color: #a52323;
+    background: #fff0f0;
+  }
 }
 
 .reservation-details {

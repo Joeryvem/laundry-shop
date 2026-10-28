@@ -18,6 +18,14 @@
     </button>
   </section>
 
+  <p *ngIf="loading" role="status">Loading reservations from Supabase...</p>
+  <p *ngIf="errorMessage" role="alert" class="error-message">
+    {{ errorMessage }}
+  </p>
+  <p *ngIf="realtimeErrorMessage" role="status" class="error-message">
+    {{ realtimeErrorMessage }}
+  </p>
+
   <section class="reservation-grid" *ngIf="reservations.length; else empty">
     <article
       class="reservation-card"
@@ -29,11 +37,13 @@
         <div class="customer-info">
           <strong>{{ reservation.customerName }}</strong>
           <small>{{ reservation.contactNumber }}</small>
+          <small>Ref: {{ reservation.reference }}</small>
         </div>
 
         <span class="status-badge"
           [class.confirmed]="reservation.status === 'Confirmed'"
-          [class.pending]="reservation.status === 'Pending'">
+          [class.pending]="reservation.status === 'Pending'"
+          [class.rejected]="reservation.status === 'Rejected'">
           <span class="dot"></span>
           {{ reservation.status }}
         </span>
@@ -59,8 +69,8 @@
         <div class="detail-item">
           <span class="detail-icon">♧</span>
           <div>
-            <small>Estimated load</small>
-            <strong>{{ reservation.bags }} {{ reservation.bags === 1 ? 'bag' : 'bags' }}</strong>
+            <small>Request status</small>
+            <strong>{{ reservation.status }}</strong>
           </div>
         </div>
       </div>
@@ -70,17 +80,21 @@
           Reschedule
         </button>
         <button class="primary-button" (click)="checkIn(reservation)">
-          Check in
+          Confirm &amp; receive
         </button>
       </div>
     </article>
   </section>
 
   <ng-template #empty>
-    <section class="empty-state">
+    <section *ngIf="loading || errorMessage" class="empty-state">
+      <h3>{{ loading ? 'Loading reservations' : 'Reservations unavailable' }}</h3>
+      <p *ngIf="errorMessage">Fix the database access issue and reload this page.</p>
+    </section>
+    <section *ngIf="!loading && !errorMessage" class="empty-state">
       <div class="empty-icon">▦</div>
       <h3>No reservations yet</h3>
-      <p>Add a reservation to schedule a customer's laundry drop-off.</p>
+      <p>Reservation requests submitted in Flutter will appear here.</p>
       <button class="primary-button" (click)="openAddForm()">
         ＋ Add reservation
       </button>
@@ -99,6 +113,10 @@
       <p>Enter the customer's scheduled drop-off details.</p>
 
       <form (submit)="$event.preventDefault(); addReservation()">
+        <p *ngIf="formErrorMessage" role="alert" class="error-message">
+          {{ formErrorMessage }}
+        </p>
+
         <label>
           Customer name
           <input
@@ -141,23 +159,12 @@
           />
         </label>
 
-        <label>
-          Estimated number of bags
-          <input
-            name="bags"
-            type="number"
-            min="1"
-            required
-            [(ngModel)]="form.bags"
-          />
-        </label>
-
         <div class="modal-actions">
           <button type="button" class="secondary-button" (click)="cancelForm()">
             Cancel
           </button>
-          <button type="submit" class="primary-button">
-            Save reservation
+          <button type="submit" class="primary-button" [disabled]="saving">
+            {{ saving ? 'Saving...' : 'Save reservation' }}
           </button>
         </div>
       </form>

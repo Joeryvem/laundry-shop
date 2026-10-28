@@ -13,10 +13,18 @@
     <div class="card-heading">
       <div>
         <h2>Customer &amp; laundry details</h2>
-        <p>Enter the information below to create a new order.</p>
+        <p>
+          {{ reservationReference
+            ? 'Enter the laundry weight to receive this reservation as an order.'
+            : 'Enter the information below to create a new order.' }}
+        </p>
       </div>
 
-      <span class="next-id">Next ID: {{ nextOrderId }}</span>
+      <span class="next-id">
+        {{ reservationReference
+          ? 'Reservation: ' + reservationReference
+          : 'Order ID generated when saved' }}
+      </span>
     </div>
 
     <div class="card-body">
@@ -110,9 +118,10 @@
         <button
           type="submit"
           class="save-button"
-          [disabled]="orderForm.invalid"
+          [disabled]="orderForm.invalid || saving"
         >
-          Save order <span aria-hidden="true">→</span>
+          {{ saving ? 'Saving...' : 'Save order' }}
+          <span aria-hidden="true">→</span>
         </button>
       </div>
     </div>

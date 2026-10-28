@@ -1,20 +1,9 @@
 
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-
-interface LaundryOrder {
-  id: string;
-  customerName: string;
-  contactNumber: string;
-  weight: number;
-  pricePerKilo: number;
-  totalFee: number;
-  paymentStatus: 'Paid' | 'Unpaid';
-  status: string;
-  date: string;
-}
+import { ActivatedRoute, Router } from '@angular/router';
+import { SupabaseService } from '../../services/supabase.service';
 
 @Component({
   selector: 'app-new-order',
@@ -23,11 +12,13 @@ interface LaundryOrder {
   templateUrl: './new-order.html',
   styleUrl: './new-order.scss'
 })
-export class NewOrder {
+export class NewOrder implements OnInit {
   customerName = '';
   contactNumber = '';
   weight = 0;
   pricePerKilo = 60;
+  reservationReference = '';
+  saving = false;
 
   message = '';
   messageType: 'success' | 'error' = 'success';
@@ -37,30 +28,22 @@ export class NewOrder {
       Math.max(0, Number(this.pricePerKilo) || 0);
   }
 
-  private getOrders(): LaundryOrder[] {
-    try {
-      return JSON.parse(
-        localStorage.getItem('foldflow_orders') || '[]'
-      ) as LaundryOrder[];
-    } catch {
-      return [];
-    }
+  constructor(
+    private readonly supabase: SupabaseService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly changeDetector: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    const params = this.route.snapshot.queryParamMap;
+    this.reservationReference = params.get('reservation') ?? '';
+    this.customerName = params.get('customerName') ?? '';
+    this.contactNumber = params.get('contactNumber') ?? '';
   }
 
-  get nextOrderId(): string {
-    const orders = this.getOrders();
-
-    const highest = orders.reduce((max, order) => {
-      const number = Number(order.id.replace('LDY-', ''));
-      return Number.isFinite(number) ? Math.max(max, number) : max;
-    }, 1048);
-
-    return `LDY-${String(highest + 1).padStart(4, '0')}`;
-  }
-
-  constructor(private router: Router) {}
-
-  saveOrder(): void {
+  async saveOrder(): Promise<void> {
+    if (this.saving) return;
     this.message = '';
 
     const name = this.customerName.trim();
@@ -92,48 +75,70 @@ export class NewOrder {
       return;
     }
 
-    const orders = this.getOrders();
-
-    const order: LaundryOrder = {
-      id: this.nextOrderId,
-      customerName: name,
-      contactNumber: phone,
-      weight,
-      pricePerKilo: price,
-      totalFee: weight * price,
-      paymentStatus: 'Unpaid',
-      status: 'Pending',
-      date: new Date().toISOString()
-    };
-
-    orders.push(order);
-
+    this.saving = true;
     try {
-      localStorage.setItem(
-        'foldflow_orders',
-        JSON.stringify(orders)
-      );
-    } catch {
-      this.showMessage(
-        'Unable to save. Check your browser storage.',
-        'error'
-      );
-      return;
+      const payload: Record<string, string | number> = {
+        customer_name: name,
+        contact_number: phone,
+        weight_kg: weight
+      };
+
+      if (this.reservationReference) {
+        const { data: reservation, error: reservationError } =
+          await this.supabase.client
+            .from('reservations')
+            .select('id')
+            .eq('reference', this.reservationReference)
+            .single();
+
+        if (reservationError) {
+          throw reservationError;
+        }
+        if (!reservation?.id) {
+          throw new Error(
+            `Reservation ${this.reservationReference} was not found.`
+          );
+        }
+
+        payload['reservation_id'] = reservation.id;
+      }
+
+      const { data: order, error } = await this.supabase.client
+        .from('orders')
+        .insert(payload)
+        .select('order_id')
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      this.showMessage(`Order ${order.order_id} saved successfully!`, 'success');
+      this.customerName = '';
+      this.contactNumber = '';
+      this.weight = 0;
+      this.pricePerKilo = 60;
+      this.reservationReference = '';
+
+      setTimeout(() => {
+        void this.router.navigate(['/active-orders']);
+      }, 900);
+    } catch (error) {
+      console.error('Failed to save Supabase order:', error);
+      const details =
+        error instanceof Error
+          ? error.message
+          : typeof error === 'object' &&
+              error !== null &&
+              'message' in error &&
+              typeof error.message === 'string'
+            ? error.message
+            : 'Supabase insert failed.';
+      this.showMessage(`Could not save order: ${details}`, 'error');
+    } finally {
+      this.saving = false;
+      this.changeDetector.markForCheck();
     }
-
-    this.showMessage(
-      `Order ${order.id} saved successfully!`,
-      'success'
-    );
-
-    this.customerName = '';
-    this.contactNumber = '';
-    this.weight = 0;
-    this.pricePerKilo = 60;
-
-    setTimeout(() => {
-      void this.router.navigate(['/active-orders']);
-    }, 900);
   }
 
   private showMessage(
